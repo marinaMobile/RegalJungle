@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import com.appsflyer.AppsFlyerLib
 import com.orhanobut.hawk.Hawk
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("AppsChecker", "Apps works")
         } else {
             Log.d("AppsChecker", "Apps doesn't work")
+            Toast.makeText(this, "GOOD", Toast.LENGTH_SHORT).show()
         }
 
 

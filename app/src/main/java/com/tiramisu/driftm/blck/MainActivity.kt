@@ -1,14 +1,17 @@
 package com.tiramisu.driftm.blck
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.appsflyer.AppsFlyerLib
 import com.orhanobut.hawk.Hawk
 import com.tiramisu.driftm.R
+import com.tiramisu.driftm.blck.CNST.DEV
 import com.tiramisu.driftm.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -47,6 +50,8 @@ class MainActivity : AppCompatActivity() {
             exec.putBoolean("activity_exec", true)
             exec.apply()
         }
+        Log.d("DevChecker", isDevMode(this).toString())
+        Hawk.put(DEV, isDevMode(this).toString())
 
         if (checker){
             AppsFlyerLib.getInstance()
@@ -56,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             Log.d("AppsChecker", "Apps works")
         } else {
             Log.d("AppsChecker", "Apps doesn't work")
+            toTestGrounds()
             Toast.makeText(this, "GOOD", Toast.LENGTH_SHORT).show()
         }
 
@@ -105,6 +111,12 @@ class MainActivity : AppCompatActivity() {
         Intent(this, Filt::class.java)
             .also { startActivity(it) }
         finish()
+    }
+    private fun isDevMode(context: Context): Boolean {
+        return run {
+            Settings.Secure.getInt(context.contentResolver,
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
+        }
     }
 
 }

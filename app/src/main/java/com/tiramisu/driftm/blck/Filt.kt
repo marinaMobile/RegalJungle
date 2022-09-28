@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.orhanobut.hawk.Hawk
-import com.tiramisu.driftm.blck.CNST.C1
-import com.tiramisu.driftm.blck.CNST.D1
-import com.tiramisu.driftm.blck.CNST.DEV
+import com.tiramisu.driftm.AppS
 import com.tiramisu.driftm.databinding.ActivityFiltBinding
 import com.tiramisu.driftm.wht.Gams
 import kotlinx.coroutines.*
@@ -37,7 +35,7 @@ class Filt : AppCompatActivity() {
                 Log.d("jsoup status out of global scope", jsoup)
                 bindFilt.txtMain.text = jsoup
 
-                if (jsoup == CNST.jsoupCheck) {
+                if (jsoup == AppS.jsoupCheck) {
                     Intent(applicationContext, Gams::class.java).also { startActivity(it) }
                 } else {
                     Intent(applicationContext, Webb::class.java).also { startActivity(it) }
@@ -51,14 +49,14 @@ class Filt : AppCompatActivity() {
     }
 
     private suspend fun coroutineTask(): String {
-        val hawk: String? = Hawk.get(C1, "null")
-        val hawkAppLink: String? = Hawk.get(D1, "null")
-        val hawkDevOrNot: String? = Hawk.get(DEV, "false")
+        val hawk: String? = Hawk.get(AppS.C1, "null")
+        val hawkAppLink: String? = Hawk.get(AppS.D1, "null")
+        val hawkDevOrNot: String? = Hawk.get(AppS.DEV, "false")
 
 
         //added devModeCheck
-        val forJsoupSetNaming: String = CNST.lru + CNST.odone + hawk + "&" + CNST.twoSub + hawkDevOrNot
-        val forJsoupSetAppLnk: String = CNST.lru + CNST.odone + hawkAppLink + "&" +  CNST.twoSub + hawkDevOrNot
+        val forJsoupSetNaming: String = AppS.lru + AppS.odone + hawk + "&" + AppS.twoSub + hawkDevOrNot
+        val forJsoupSetAppLnk: String = AppS.lru + AppS.odone + hawkAppLink + "&" +  AppS.twoSub + hawkDevOrNot
 
         withContext(Dispatchers.IO) {
             //changed logical null to string null

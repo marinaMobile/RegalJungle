@@ -13,10 +13,10 @@ import android.widget.Toast
 import com.appsflyer.AppsFlyerLib
 import com.onesignal.OneSignal
 import com.orhanobut.hawk.Hawk
+import com.tiramisu.driftm.AppS.Companion.C1
+import com.tiramisu.driftm.AppS.Companion.D1
+import com.tiramisu.driftm.AppS.Companion.MAIN_ID
 import com.tiramisu.driftm.R
-import com.tiramisu.driftm.blck.CNST.C1
-import com.tiramisu.driftm.blck.CNST.D1
-import com.tiramisu.driftm.blck.CNST.MAIN_ID
 import com.tiramisu.driftm.databinding.ActivityWebbBinding
 import org.json.JSONException
 import org.json.JSONObject

@@ -8,10 +8,16 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
+import com.facebook.applinks.AppLinkData
 import com.orhanobut.hawk.Hawk
+import com.tiramisu.driftm.AppS.Companion.AF_DEV_KEY
+import com.tiramisu.driftm.AppS.Companion.C1
+import com.tiramisu.driftm.AppS.Companion.D1
+import com.tiramisu.driftm.AppS.Companion.DEV
+import com.tiramisu.driftm.AppS.Companion.appsUrl
 import com.tiramisu.driftm.R
-import com.tiramisu.driftm.blck.CNST.DEV
 import com.tiramisu.driftm.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 import java.lang.Exception
@@ -20,7 +26,7 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     private lateinit var bindMain: ActivityMainBinding
-    private val viewModel: ViewModel by viewModels()
+
     var checker: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,9 +35,10 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(bindMain.root)
 
-        viewModel.deePP(this)
+        deePP(this)
+
         val job = GlobalScope.launch(Dispatchers.IO) {
-            checker = getCheckCode(CNST.appsUrl)
+            checker = getCheckCode(appsUrl)
             Log.d("CHECKAPPS", "I did something")
         }
         runBlocking {
@@ -55,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         if (checker){
             AppsFlyerLib.getInstance()
-                .init(CNST.AF_DEV_KEY, viewModel.conversionDataListener, applicationContext)
+                .init(AF_DEV_KEY, conversionDataListener, applicationContext)
             AppsFlyerLib.getInstance().start(this)
             afNullRecordedOrNotChecker(1500)
             Log.d("AppsChecker", "Apps works")
@@ -94,13 +101,13 @@ class MainActivity : AppCompatActivity() {
     private fun afNullRecordedOrNotChecker(timeInterval: Long): Job {
         return CoroutineScope(Dispatchers.IO).launch {
             while (NonCancellable.isActive) {
-                val hawk1: String? = Hawk.get(CNST.C1)
+                val hawk1: String? = Hawk.get(C1)
                 if (hawk1 != null) {
                     Log.d("TestInUIHawk", hawk1.toString())
                     toTestGrounds()
                     break
                 } else {
-                    val hawk1: String? = Hawk.get(CNST.C1)
+                    val hawk1: String? = Hawk.get(C1)
                     Log.d("TestInUIHawkNulled", hawk1.toString())
                     delay(timeInterval)
                 }
@@ -116,6 +123,49 @@ class MainActivity : AppCompatActivity() {
         return run {
             Settings.Secure.getInt(context.contentResolver,
                 Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
+        }
+    }
+
+    val conversionDataListener = object : AppsFlyerConversionListener {
+        override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
+
+            val dataGotten = data?.get("campaign").toString()
+//                val dataGotten = "apps_sub2_sub3_sub4"
+            Hawk.put(C1, dataGotten)
+            Log.d("devTEST", data.toString())
+        }
+
+        override fun onConversionDataFail(p0: String?) {
+
+        }
+
+        override fun onAppOpenAttribution(p0: MutableMap<String, String>?) {
+
+        }
+
+        override fun onAttributionFailure(p0: String?) {
+        }
+    }
+
+
+    fun deePP(context: Context) {
+        AppLinkData.fetchDeferredAppLinkData(
+            context
+        ) { appLinkData: AppLinkData? ->
+            appLinkData?.let {
+                val params = appLinkData.targetUri.host
+
+                Log.d("D11PL", "$params")
+//                val conjoined = TextUtils.join("/", params)
+//                Log.d("FB_TEST:", conjoined)
+
+                Hawk.put(D1, params.toString())
+
+
+            }
+            if (appLinkData == null) {
+                Log.d("FB_ERR:", "Params = null")
+            }
         }
     }
 

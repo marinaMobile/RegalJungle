@@ -12,7 +12,6 @@ import android.webkit.*
 import android.widget.Toast
 import com.appsflyer.AppsFlyerLib
 import com.onesignal.OneSignal
-import com.orhanobut.hawk.Hawk
 import com.tiramisu.driftm.AppS.Companion.C1
 import com.tiramisu.driftm.AppS.Companion.D1
 import com.tiramisu.driftm.AppS.Companion.MAIN_ID
@@ -22,9 +21,11 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import kotlin.math.log
 
 class Webb : AppCompatActivity() {
     private val FILECHOOSERRESULTCODE = 1
+
 
     // the same for Android 5.0 methods only
     var mFilePathCallback: ValueCallback<Array<Uri>>? = null
@@ -35,12 +36,8 @@ class Webb : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bind = ActivityWebbBinding.inflate(layoutInflater)
-
         setContentView(bind.root)
-
-
         vv = bind.viewWeb
-
         Toast.makeText(this, "Loading...", Toast.LENGTH_LONG).show()
 
         val cookieManager = CookieManager.getInstance()
@@ -61,7 +58,7 @@ class Webb : AppCompatActivity() {
                         Log.d("devx", "ffff")
 
                         val intent = Intent(Intent.ACTION_VIEW)
-                        intent.setData(Uri.parse(url))
+                        intent.data = Uri.parse(url)
                         startActivity(intent)
                     } else {
 
@@ -99,6 +96,7 @@ class Webb : AppCompatActivity() {
             ) {
                 Toast.makeText(activity, description, Toast.LENGTH_SHORT).show()
             }
+
 
 
         }
@@ -171,7 +169,7 @@ class Webb : AppCompatActivity() {
 
 
 
-    fun pushToOneSignal(string: String){
+    private fun pushToOneSignal(string: String){
 // Setting External User Id with Callback Available in SDK Version 4.0.0+
         OneSignal.setExternalUserId(
             string,
@@ -252,9 +250,12 @@ class Webb : AppCompatActivity() {
     private fun getUrl(): String {
 
         val spoon = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
-        val cpOne: String? = Hawk.get(C1)
-        val dpOne: String? = Hawk.get(D1)
-        val mainid: String = Hawk.get(MAIN_ID)
+
+        val sharPref = getSharedPreferences("SP", MODE_PRIVATE)
+
+        val cpOne: String? = sharPref.getString(C1, "null")
+        val dpOne: String? = sharPref.getString(D1, "null")
+        val mainid: String? = sharPref.getString(MAIN_ID, null)
 
         val pack = "com.tiramisu.driftm"
 
@@ -278,7 +279,7 @@ class Webb : AppCompatActivity() {
 
         val androidVersion = Build.VERSION.RELEASE
 
-        val resultAB = first + second
+        val resultAB = first+second
 
         var after = ""
         if (cpOne != "null") {

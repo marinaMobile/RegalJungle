@@ -2,14 +2,17 @@ package com.tiramisu.driftm
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import com.facebook.AccessTokenManager.SHARED_PREFERENCES_NAME
 import com.onesignal.OneSignal
-import com.orhanobut.hawk.Hawk
 import com.tiramisu.driftm.blck.Adv
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class gitAppS : Application() {
+
+class AppS : Application() {
+
 
     companion object {
         const val AF_DEV_KEY = "rHhkgEKwbpptP6p9QyKWk6"
@@ -27,12 +30,13 @@ class gitAppS : Application() {
         var MAIN_ID: String? = ""
         var C1: String? = "c11"
         var D1: String? = "d11"
-        var DEV: String = "false"
+
     }
 
     override fun onCreate() {
         super.onCreate()
-        Hawk.init(this).build()
+
+//        Hawk.init(this).build()
         GlobalScope.launch(Dispatchers.IO) {
             applyDeviceId(context = applicationContext)
         }
@@ -42,11 +46,22 @@ class gitAppS : Application() {
         OneSignal.setAppId(ONESIGNAL_APP_ID)
 
 
+
+
+
     }
 
     private suspend fun applyDeviceId(context: Context) {
         val advertisingInfo = Adv(context)
         val idInfo = advertisingInfo.getAdvertisingId()
-        Hawk.put(AppS.MAIN_ID, idInfo)
+
+        val prefs = getSharedPreferences("SP", MODE_PRIVATE)
+        val editor = prefs.edit()
+
+        editor.putString(MAIN_ID, idInfo)
+        editor.apply()
+
+
+//        Hawk.put(MAIN_ID, idInfo)
     }
 }

@@ -13,8 +13,7 @@ class Adv (val context: Context) {
         withContext(Dispatchers.IO) {
             adInfo.start()
             val adIdInfo = adInfo.info
-            Log.d("getAdvertisingId = ",adIdInfo.id.toString())
-            adInfo.finish()
+            Log.d("getAdvertisingId = ", adIdInfo.id.toString())
             adIdInfo.id
         }
 }

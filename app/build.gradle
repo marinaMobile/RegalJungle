@@ -45,7 +45,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.orhanobut:hawk:2.0.1'
+//    implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'com.appsflyer:af-android-sdk:6.5.2'
     implementation 'com.onesignal:OneSignal:4.8.0'
 

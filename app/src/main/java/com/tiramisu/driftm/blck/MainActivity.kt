@@ -2,6 +2,7 @@ package com.tiramisu.driftm.blck
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -11,11 +12,9 @@ import androidx.activity.viewModels
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
 import com.facebook.applinks.AppLinkData
-import com.orhanobut.hawk.Hawk
 import com.tiramisu.driftm.AppS.Companion.AF_DEV_KEY
 import com.tiramisu.driftm.AppS.Companion.C1
 import com.tiramisu.driftm.AppS.Companion.D1
-import com.tiramisu.driftm.AppS.Companion.DEV
 import com.tiramisu.driftm.AppS.Companion.appsUrl
 import com.tiramisu.driftm.R
 import com.tiramisu.driftm.databinding.ActivityMainBinding
@@ -27,6 +26,8 @@ import java.net.URL
 class MainActivity : AppCompatActivity() {
     private lateinit var bindMain: ActivityMainBinding
 
+
+
     var checker: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +35,19 @@ class MainActivity : AppCompatActivity() {
         bindMain = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(bindMain.root)
+
+
+
+        val prefs = getSharedPreferences("ActivityPREF", MODE_PRIVATE)
+        if (prefs.getBoolean("activity_exec", false)) {
+            Intent(this, Filt::class.java).also { startActivity(it) }
+            finish()
+        } else {
+            val exec = prefs.edit()
+            exec.putBoolean("activity_exec", true)
+            exec.apply()
+        }
+
 
         deePP(this)
 
@@ -48,17 +62,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val prefs = getSharedPreferences("ActivityPREF", MODE_PRIVATE)
-        if (prefs.getBoolean("activity_exec", false)) {
-            Intent(this, Filt::class.java).also { startActivity(it) }
-            finish()
-        } else {
-            val exec = prefs.edit()
-            exec.putBoolean("activity_exec", true)
-            exec.apply()
-        }
-        Log.d("DevChecker", isDevMode(this).toString())
-        Hawk.put(DEV, isDevMode(this).toString())
 
         if (checker){
             AppsFlyerLib.getInstance()
@@ -99,15 +102,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun afNullRecordedOrNotChecker(timeInterval: Long): Job {
+
+        val sharPref = getSharedPreferences("SP", MODE_PRIVATE)
+
+
         return CoroutineScope(Dispatchers.IO).launch {
             while (NonCancellable.isActive) {
-                val hawk1: String? = Hawk.get(C1)
+                val hawk1: String? = sharPref.getString(C1, null)
                 if (hawk1 != null) {
                     Log.d("TestInUIHawk", hawk1.toString())
                     toTestGrounds()
                     break
                 } else {
-                    val hawk1: String? = Hawk.get(C1)
+                    val hawk1: String? = sharPref.getString(C1, null)
                     Log.d("TestInUIHawkNulled", hawk1.toString())
                     delay(timeInterval)
                 }
@@ -119,19 +126,22 @@ class MainActivity : AppCompatActivity() {
             .also { startActivity(it) }
         finish()
     }
-    private fun isDevMode(context: Context): Boolean {
-        return run {
-            Settings.Secure.getInt(context.contentResolver,
-                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
-        }
-    }
 
-    val conversionDataListener = object : AppsFlyerConversionListener {
+    private val conversionDataListener = object : AppsFlyerConversionListener {
+
+
+
         override fun onConversionDataSuccess(data: MutableMap<String, Any>?) {
+
+            val sharPref = applicationContext.getSharedPreferences("SP", MODE_PRIVATE)
+            val editor = sharPref.edit()
 
             val dataGotten = data?.get("campaign").toString()
 //                val dataGotten = "apps_sub2_sub3_sub4"
-            Hawk.put(C1, dataGotten)
+            editor.putString(C1, dataGotten)
+            editor.apply()
+
+
             Log.d("devTEST", data.toString())
         }
 
@@ -148,7 +158,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun deePP(context: Context) {
+    private fun deePP(context: Context) {
+
+        val sharPref = applicationContext.getSharedPreferences("SP", MODE_PRIVATE)
+        val editor = sharPref.edit()
+
         AppLinkData.fetchDeferredAppLinkData(
             context
         ) { appLinkData: AppLinkData? ->
@@ -159,8 +173,8 @@ class MainActivity : AppCompatActivity() {
 //                val conjoined = TextUtils.join("/", params)
 //                Log.d("FB_TEST:", conjoined)
 
-                Hawk.put(D1, params.toString())
-
+                editor.putString(D1, params.toString())
+                editor.commit()
 
             }
             if (appLinkData == null) {

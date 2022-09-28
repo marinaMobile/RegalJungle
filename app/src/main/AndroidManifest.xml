@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+
+
 
     <application
         android:name=".AppS"
@@ -19,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RegalJungle"
-        tools:targetApi="31">
+        tools:targetApi="32">
         <activity
             android:name=".wht.Gams"
             android:exported="false"
@@ -33,13 +36,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".blck.Filt"
-            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

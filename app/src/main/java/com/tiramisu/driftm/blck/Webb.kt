@@ -12,7 +12,6 @@ import android.webkit.*
 import android.widget.Toast
 import com.appsflyer.AppsFlyerLib
 import com.onesignal.OneSignal
-import com.orhanobut.hawk.Hawk
 import com.tiramisu.driftm.AppS.Companion.C1
 import com.tiramisu.driftm.AppS.Companion.D1
 import com.tiramisu.driftm.AppS.Companion.MAIN_ID
@@ -252,9 +251,11 @@ class Webb : AppCompatActivity() {
     private fun getUrl(): String {
 
         val spoon = getSharedPreferences("SP_WEBVIEW_PREFS", AppCompatActivity.MODE_PRIVATE)
-        val cpOne: String? = Hawk.get(C1)
-        val dpOne: String? = Hawk.get(D1)
-        val mainid: String = Hawk.get(MAIN_ID)
+        val sharPref = getSharedPreferences("SP", MODE_PRIVATE)
+
+        val cpOne: String? = sharPref.getString(C1, "null")
+        val dpOne: String? = sharPref.getString(D1, "null")
+        val mainid: String? = sharPref.getString(MAIN_ID, null)
 
         val pack = "com.tiramisu.driftm"
 

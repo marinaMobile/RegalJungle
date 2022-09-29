@@ -32,21 +32,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindMain = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(bindMain.root)
         jsoup = ""
-        deePP(this)
-
-        val job = GlobalScope.launch(Dispatchers.IO) {
-            checker = getCheckCode(linkAppsCheckPart1+linkAppsCheckPart2)
-            Log.d("CHECKAPPS", "I did something")
-        }
-        runBlocking {
-            try {
-                job.join()
-            } catch (_: Exception){
-            }
-        }
 
         val prefs = getSharedPreferences("ActivityPREF", MODE_PRIVATE)
         if (prefs.getBoolean("activity_exec", false)) {
@@ -58,20 +45,32 @@ class MainActivity : AppCompatActivity() {
             val exec = prefs.edit()
             exec.putBoolean("activity_exec", true)
             exec.apply()
-        }
+            val job = GlobalScope.launch(Dispatchers.IO) {
+                checker = getCheckCode(linkAppsCheckPart1+linkAppsCheckPart2)
+                Log.d("CHECKAPPS", "I did something")
+            }
+            runBlocking {
+                try {
+                    job.join()
+                } catch (_: Exception){
+                }
+            }
 
+            if (checker){
+                AppsFlyerLib.getInstance()
+                    .init(AF_DEV_KEY, conversionDataListener, applicationContext)
+                AppsFlyerLib.getInstance().start(this)
+                afNullRecordedOrNotChecker(1500)
 
-        if (checker){
-            AppsFlyerLib.getInstance()
-                .init(AF_DEV_KEY, conversionDataListener, applicationContext)
-            AppsFlyerLib.getInstance().start(this)
-            afNullRecordedOrNotChecker(1500)
-
-        } else {
-            GlobalScope.launch(Dispatchers.IO) {
-                mover()
+            } else {
+                GlobalScope.launch(Dispatchers.IO) {
+                    mover()
+                }
             }
         }
+        deePP(this)
+
+
 
 
     }
@@ -169,10 +168,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val text = urlConnection.inputStream.bufferedReader().readText()
             if (text.isNotEmpty()) {
-
                 jsoup = text
-            } else {
-
             }
         } catch (ex: Exception) {
 

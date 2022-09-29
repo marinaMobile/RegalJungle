@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         bindMain = ActivityMainBinding.inflate(layoutInflater)
         setContentView(bindMain.root)
         jsoup = ""
-
+        deePP(this)
         val prefs = getSharedPreferences("ActivityPREF", MODE_PRIVATE)
         if (prefs.getBoolean("activity_exec", false)) {
             GlobalScope.launch {
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        deePP(this)
+
 
 
 

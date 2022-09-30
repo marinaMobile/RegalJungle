@@ -33,3 +33,4 @@
 -keep class com.airbnb.lottie.** {*;}
 
 -keep class kotlinx.coroutines.**
+-dontwarn kotlinx.coroutines.**

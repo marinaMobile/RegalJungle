@@ -11,6 +11,7 @@ import android.util.Log
 import android.webkit.*
 import android.widget.Toast
 import com.appsflyer.AppsFlyerLib
+import com.google.android.material.snackbar.Snackbar
 import com.onesignal.OneSignal
 import com.tiramisu.driftm.AppS.Companion.C1
 import com.tiramisu.driftm.AppS.Companion.D1
@@ -21,11 +22,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
-import kotlin.math.log
 
 class Webb : AppCompatActivity() {
     private val FILECHOOSERRESULTCODE = 1
-
 
     // the same for Android 5.0 methods only
     var mFilePathCallback: ValueCallback<Array<Uri>>? = null
@@ -38,7 +37,8 @@ class Webb : AppCompatActivity() {
         bind = ActivityWebbBinding.inflate(layoutInflater)
         setContentView(bind.root)
         vv = bind.viewWeb
-        Toast.makeText(this, "Loading...", Toast.LENGTH_LONG).show()
+       Snackbar.make(bind.root, "Loading...",
+            Snackbar.LENGTH_LONG).show()
 
         val cookieManager = CookieManager.getInstance()
         cookieManager.setAcceptCookie(true)
@@ -55,7 +55,6 @@ class Webb : AppCompatActivity() {
                         return false
                     }
                     if (appInstalledOrNot(url)) {
-                        Log.d("devx", "ffff")
 
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(url)
@@ -299,7 +298,6 @@ class Webb : AppCompatActivity() {
 
         val pm = packageManager
         try {
-            Log.d("devx", uri)
 
             pm.getPackageInfo("org.telegram.messenger", PackageManager.GET_ACTIVITIES)
 
@@ -343,7 +341,6 @@ class Webb : AppCompatActivity() {
             if (doubleBackToExitPressedOnce) {
                 vv.stopLoading()
                 vv.loadUrl(firstUrl)
-                //Toast.makeText(applicationContext, "attemt loading $firstUrl", Toast.LENGTH_LONG).show()
             }
             this.doubleBackToExitPressedOnce = true
             vv.goBack()

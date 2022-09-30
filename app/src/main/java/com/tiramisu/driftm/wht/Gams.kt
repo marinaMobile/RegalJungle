@@ -23,7 +23,6 @@ class Gams : AppCompatActivity() {
         val runnable = Runnable {
             updateDisplay()
         }
-
         updateHandler.postDelayed(runnable, 5000)
     }
 
@@ -40,7 +39,6 @@ class Gams : AppCompatActivity() {
         val animation = bindGams.crownIV.animate()
             .x(randomTwo * (bindGams.llWasp.width-bindGams.crownIV.width))
             .y(randomTwo * (bindGams.llWasp.height-bindGams.crownIV.height))
-
         animation.duration = 300
         animation.start()
 

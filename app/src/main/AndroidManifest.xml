@@ -38,13 +38,6 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".blck.Filt"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
             android:name=".blck.MainActivity"
             android:exported="true"
             android:launchMode="singleInstance"

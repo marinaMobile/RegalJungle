@@ -11,11 +11,25 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# Onesignal
+-dontwarn com.onesignal.**
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+-keep class com.onesignal.ActivityLifecycleListenerCompat** {*;}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Facebook
+-keep class com.facebook.** {
+   *;
+}
+
+# Appsflyer
+-dontwarn com.appsflyer.AFKeystoreWrapper
+
+-keepnames class * implements android.os.Parcelable
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final *** CREATOR;
+}
+#Lottie
+-dontwarn com.airbnb.lottie.**
+-keep class com.airbnb.lottie.** {*;}
+
+-keep class kotlinx.coroutines.**
